@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - LendAnEar</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDisG9a7mdb3U7T26sA62jR5MRPvlWs-Hg",
+            authDomain: "lendanear-app.firebaseapp.com",
+            projectId: "lendanear-app",
+            storageBucket: "lendanear-app.firebasestorage.app",
+            messagingSenderId: "680121471591",
+            appId: "1:680121471591:web:7fda16aeb20109136c7ac2",
+            measurementId: "G-610TKLESXL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+    <script src="cookie-manager.js"></script>
+    <script>
+        if (localStorage.getItem('isAuthenticated') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="development-banner">
+        <p>⚠️ This website is currently under development. Some features may not work as expected. We appreciate your patience and feedback.</p>
+    </div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">LendAnEar</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="about.html">About Us</a>
+                <a href="support.html">Support</a>
+                <a href="faq.html">FAQ</a>
+                <a href="contact.html" class="active">Contact Us</a>
+                <div class="user-info">
+                    <span id="userDisplayName">User</span>
+                    <button class="logout-button" id="logoutButton">Logout</button>
+                </div>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="contact-section">
+            <div class="contact-content">
+                <h1>Contact Us</h1>
+                
+                <div class="emergency-notice" style="background-color: #ffebee; color: #d32f2f; padding: 15px; border-radius: 8px; margin-bottom: 20px; text-align: center; font-weight: 500;">
+                    <p style="margin: 0;">⚠️ If you're thinking of harming yourself or others, please contact emergency services (911) or the National Crisis Hotline (988) immediately. This is not the appropriate channel for emergency situations.</p>
+                </div>
+                
+                <div class="contact-grid">
+                    <div class="contact-form">
+                        <h2>Send a Message</h2>
+                        <form action="#" method="POST">
+                            <div class="form-group">
+                                <label for="name">Name</label>
+                                <input type="text" id="name" name="name" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="email">Email</label>
+                                <input type="email" id="email" name="email" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="subject">Subject</label>
+                                <input type="text" id="subject" name="subject" required>
+                            </div>
+                            
+                            <div class="form-group">
+                                <label for="message">Message</label>
+                                <textarea id="message" name="message" rows="5" required></textarea>
+                            </div>
+                            
+                            <button type="submit" class="submit-button">Send Message</button>
+                        </form>
+                    </div>
+                    
+                    <div class="contact-info">
+                        <div class="info-card">
+                            <h3>For any technical issues</h3>
+                            <p>logicloop.dev@gmail.com</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="cookies.html">Cookie Policy</a>
+            </div>
+            <div class="copyright">
+                © 2025 LendAnEar. All rights reserved.
+            </div>
+        </div>
+    </footer>
+    
+    <div class="mobile-menu">
+        <div class="mobile-menu-header">
+            <a href="index.html" class="logo">LendAnEar</a>
+            <button class="mobile-menu-close" aria-label="Close menu">×</button>
+        </div>
+        <div class="mobile-menu-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="support.html">Support</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html" class="active">Contact Us</a>
+            <button class="logout-button" id="mobileLogoutButton">Logout</button>
+        </div>
+    </div>
+
+    <div class="mobile-menu-overlay"></div>
+
+    <style>
+    .cookie-banner {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(90deg, #8b5cf6 0%, #7c3aed 100%);
+        color: white;
+        z-index: 1000;
+        padding: 30px 40px;
+        display: none;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        transform: translateY(100%);
+        opacity: 0;
+    }
+
+    .cookie-banner.show {
+        transform: translateY(0);
+        opacity: 1;
+    }
+
+    .cookie-content {
+        max-width: 1400px;
+        margin: 0 auto;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 40px;
+    }
+
+    .cookie-content p {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.5;
+        color: white;
+        flex: 1;
+        max-width: 800px;
+    }
+
+    .cookie-buttons {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+    }
+
+    .cookie-button {
+        padding: 12px 30px;
+        border: none;
+        border-radius: 25px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        min-width: 120px;
+        text-align: center;
+    }
+
+    .cookie-button.accept {
+        background-color: white;
+        color: #8b5cf6;
+    }
+
+    .cookie-button.reject {
+        background-color: transparent;
+        color: white;
+        border: 2px solid white;
+    }
+
+    .cookie-button.customize {
+        background-color: transparent;
+        color: white;
+        padding: 12px 25px;
+    }
+
+    .cookie-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    }
+
+    @media (max-width: 768px) {
+        .cookie-banner {
+            padding: 25px 20px;
+        }
+        
+        .cookie-content {
+            flex-direction: column;
+            text-align: center;
+            gap: 25px;
+        }
+        
+        .cookie-content p {
+            font-size: 15px;
+        }
+        
+        .cookie-buttons {
+            justify-content: center;
+            width: 100%;
+        }
+        
+        .cookie-button {
+            padding: 10px 25px;
+            min-width: 110px;
+        }
+    }
+
+    .mobile-menu-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100vh;
+        background: white;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        transition: all 0.3s ease-in-out;
+        z-index: 1000;
+        overflow-y: auto;
+        display: none;
+    }
+
+    .mobile-menu.active {
+        left: 0;
+        display: block;
+    }
+
+    .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #333;
+        padding: 10px;
+    }
+
+    .mobile-menu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        background: white;
+    }
+
+    .mobile-menu-close {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: #333;
+        padding: 10px;
+    }
+
+    .mobile-menu-links {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .mobile-menu-links a {
+        color: #333;
+        text-decoration: none;
+        font-size: 18px;
+        padding: 15px 0;
+        display: block;
+        border-bottom: 1px solid #eee;
+    }
+
+    .mobile-menu-links a.active {
+        color: #8b5cf6;
+        font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+        }
+
+        .mobile-menu-btn {
+            display: block;
+        }
+
+        .nav-container {
+            padding: 0 20px;
+            justify-content: space-between;
+        }
+
+        .mobile-menu-links .logout-button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 15px;
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .mobile-menu-links .logout-button:hover {
+            background: #7c3aed;
+        }
+    }
+    </style>
+
+    <script>
+    const cookieBanner = document.getElementById('cookieBanner');
+    const acceptCookiesBtn = document.getElementById('acceptCookies');
+    const rejectCookiesBtn = document.getElementById('rejectCookies');
+    
+    if (cookieBanner && acceptCookiesBtn && rejectCookiesBtn) {
+        if (!localStorage.getItem('cookieChoice')) {
+            cookieBanner.style.display = 'block';
+            setTimeout(() => {
+                cookieBanner.classList.add('show');
+            }, 100);
+        } else {
+            cookieBanner.style.display = 'none';
+        }
+        
+        acceptCookiesBtn.addEventListener('click', () => {
+            localStorage.setItem('cookieChoice', 'accepted');
+            cookieBanner.classList.remove('show');
+            setTimeout(() => {
+                cookieBanner.style.display = 'none';
+            }, 300); 
+            enableThirdPartyCookies();
+        });
+        
+        rejectCookiesBtn.addEventListener('click', () => {
+            localStorage.setItem('cookieChoice', 'rejected');
+            cookieBanner.classList.remove('show');
+            setTimeout(() => {
+                cookieBanner.style.display = 'none';
+            }, 300); 
+            disableThirdPartyCookies();
+        });
+    
+        const customizeBtn = document.getElementById('customizeCookies');
+        if (customizeBtn) {
+            customizeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showCookieCustomizationPanel();
+            });
+        }
+    }
+    </script>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const mobileMenuClose = document.querySelector('.mobile-menu-close');
+        const overlay = document.querySelector('.mobile-menu-overlay');
+
+        if (mobileMenuBtn && mobileMenu && mobileMenuClose) {
+            function openMobileMenu() {
+                mobileMenu.classList.add('active');
+                overlay.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMobileMenu() {
+                mobileMenu.classList.remove('active');
+                overlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+
+            mobileMenuBtn.addEventListener('click', openMobileMenu);
+            mobileMenuClose.addEventListener('click', closeMobileMenu);
+            overlay.addEventListener('click', closeMobileMenu);
+
+            // Close menu when clicking on a link
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+        }
+        
+        document.getElementById('userDisplayName').textContent = localStorage.getItem('username') || 'User';
+        
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            localStorage.removeItem('isAuthenticated');
+            window.location.href = 'login.html';
+        });
+        
+        document.getElementById('mobileLogoutButton').addEventListener('click', function() {
+            localStorage.removeItem('isAuthenticated');
+            window.location.href = 'login.html';
+        });
+    });
+    </script>
+</body>
+</html> 

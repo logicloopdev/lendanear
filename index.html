@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LendAnEar - Anonymous Support Chat</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDisG9a7mdb3U7T26sA62jR5MRPvlWs-Hg",
+            authDomain: "lendanear-app.firebaseapp.com",
+            projectId: "lendanear-app",
+            storageBucket: "lendanear-app.firebasestorage.app",
+            messagingSenderId: "680121471591",
+            appId: "1:680121471591:web:7fda16aeb20109136c7ac2",
+            measurementId: "G-610TKLESXL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+    <script src="cookie-manager.js"></script>
+    <script>
+        if (localStorage.getItem('isAuthenticated') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="development-banner">
+        <p>⚠️ This website is currently under development. Some features may not work as expected. We appreciate your patience and feedback.</p>
+    </div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">LendAnEar</a>
+            <div class="nav-links">
+                <a href="index.html" class="active">Home</a>
+                <a href="about.html">About Us</a>
+                <a href="support.html">Support</a>
+                <a href="faq.html">FAQ</a>
+                <a href="contact.html">Contact Us</a>
+                <div class="user-info">
+                    <span id="userDisplayName">User</span>
+                    <button class="logout-button" id="logoutButton">Logout</button>
+                </div>
+            </div>
+            <button class="mobile-menu-btn" aria-label="Menu">☰</button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>LendAnEar</h1>
+                <h2>A Safe Space to Talk</h2>
+                <p>We provide a confidential and supportive environment where you can freely express your thoughts and feelings. Our AI-powered platform is here to listen, support, and guide you through your journey.</p>
+                <div class="age-warning">
+                    <p>⚠️ This service is only available for people aged 14 and above</p>
+                </div>
+                <div class="cta-buttons">
+                    <a href="#" class="cta-button" id="startChatBtn">Start Talking Now</a>
+                    <a href="#" class="cta-button secondary" id="volunteerBtn">Become a Volunteer</a>
+                </div>
+                <p class="encouragement-message">We're proud of you just by joining this site. Taking the first step to talk about your feelings is a sign of strength.</p>
+            </div>
+        </section>
+
+        <section class="features">
+            <div class="feature-card">
+                <div class="feature-icon">🤝</div>
+                <h3>24/7 Support</h3>
+                <p>Our AI is available around the clock to provide immediate support whenever you need someone to talk to.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🔒</div>
+                <h3>Complete Privacy</h3>
+                <p>Your conversations are private and secure. We use advanced encryption to protect your data.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💬</div>
+                <h3>Natural Conversations</h3>
+                <p>Our AI is designed to engage in natural, empathetic conversations that feel like talking to a friend.</p>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="cookies.html">Cookie Policy</a>
+            </div>
+            <div class="copyright">
+                © 2025 LendAnEar. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <div class="mobile-menu">
+        <div class="mobile-menu-header">
+            <a href="index.html" class="logo">LendAnEar</a>
+            <button class="mobile-menu-close" aria-label="Close menu">×</button>
+        </div>
+        <div class="mobile-menu-links">
+            <a href="index.html" class="active">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="support.html">Support</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Contact Us</a>
+            <button class="logout-button" id="mobileLogoutButton">Logout</button>
+        </div>
+    </div>
+
+    <div class="age-verification-modal" id="ageVerificationModal">
+        <div class="age-verification-content">
+            <div class="age-verification-header">
+                <h2>Age Verification</h2>
+                <p class="age-verification-subtitle">To use LendAnEar you must be at least 14 years old.</p>
+            </div>
+            
+            <div class="age-verification-body">
+                <div class="checkbox-group">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="ageCheckbox">
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">I declare that I am 14 years old or older</span>
+                    </label>
+                </div>
+                
+                <div class="checkbox-group">
+                    <label class="custom-checkbox">
+                        <input type="checkbox" id="termsCheckbox">
+                        <span class="checkmark"></span>
+                        <span class="checkbox-label">I accept the terms and conditions of the service</span>
+                    </label>
+                </div>
+            </div>
+            
+            <div class="age-verification-footer">
+                <button class="cancel-button" id="cancelAgeVerification">Cancel</button>
+                <button class="proceed-button" id="proceedAgeVerification">Proceed</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    .age-warning {
+        background-color: #fff3cd;
+        border: 1px solid #ffeeba;
+        color: #856404;
+        padding: 15px;
+        border-radius: 5px;
+        margin: 30px auto;
+        text-align: center;
+        max-width: 600px;
+        width: 90%;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .age-warning p {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 500;
+    }
+
+    .terms-checkbox {
+        margin: 15px 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .terms-checkbox input[type="checkbox"] {
+        width: 20px;
+        height: 20px;
+    }
+
+    .terms-checkbox label {
+        font-size: 16px;
+    }
+
+    .encouragement-message {
+        text-align: center;
+        color: #6c757d;
+        font-style: italic;
+        margin-top: 20px;
+        font-size: 1.1em;
+        max-width: 600px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .mobile-menu-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .mobile-menu {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100vh;
+        background: white;
+        box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        transition: all 0.3s ease-in-out;
+        z-index: 1000;
+        overflow-y: auto;
+        display: none;
+    }
+
+    .mobile-menu.active {
+        left: 0;
+        display: block;
+    }
+
+    .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        font-size: 24px;
+        cursor: pointer;
+        color: #333;
+        padding: 10px;
+    }
+
+    .mobile-menu-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px;
+        border-bottom: 1px solid #eee;
+        background: white;
+    }
+
+    .mobile-menu-close {
+        background: none;
+        border: none;
+        font-size: 28px;
+        cursor: pointer;
+        color: #333;
+        padding: 10px;
+    }
+
+    .mobile-menu-links {
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .mobile-menu-links a {
+        color: #333;
+        text-decoration: none;
+        font-size: 18px;
+        padding: 15px 0;
+        display: block;
+        border-bottom: 1px solid #eee;
+    }
+
+    .mobile-menu-links a.active {
+        color: #8b5cf6;
+        font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+        }
+
+        .mobile-menu-btn {
+            display: block;
+        }
+
+        .nav-container {
+            padding: 0 20px;
+            justify-content: space-between;
+        }
+
+        .mobile-menu-links .logout-button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 15px;
+            background: #8b5cf6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .mobile-menu-links .logout-button:hover {
+            background: #7c3aed;
+        }
+    }
+
+    .age-verification-modal {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1000;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .age-verification-content {
+        background: white;
+        padding: 40px;
+        border-radius: 12px;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        width: 90%;
+        text-align: center;
+    }
+
+    .age-verification-header {
+        margin-bottom: 30px;
+    }
+
+    .age-verification-header h2 {
+        color: #333;
+        font-size: 28px;
+        margin-bottom: 10px;
+        font-weight: 700;
+    }
+
+    .age-verification-subtitle {
+        color: #666;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .age-verification-body {
+        margin-bottom: 30px;
+    }
+
+    .checkbox-group {
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+    .custom-checkbox {
+        display: flex;
+        align-items: center;
+        cursor: pointer;
+        padding: 10px;
+        border-radius: 8px;
+        transition: background-color 0.2s;
+    }
+
+    .custom-checkbox:hover {
+        background-color: #f8f9fa;
+    }
+
+    .custom-checkbox input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+        height: 0;
+        width: 0;
+    }
+
+    .checkmark {
+        position: relative;
+        height: 22px;
+        width: 22px;
+        background-color: #fff;
+        border: 2px solid #ddd;
+        border-radius: 4px;
+        margin-right: 12px;
+        transition: all 0.2s;
+    }
+
+    .custom-checkbox input:checked ~ .checkmark {
+        background-color: #8b5cf6;
+        border-color: #8b5cf6;
+    }
+
+    .checkmark:after {
+        content: "";
+        position: absolute;
+        display: none;
+        left: 7px;
+        top: 3px;
+        width: 5px;
+        height: 10px;
+        border: solid white;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+
+    .custom-checkbox input:checked ~ .checkmark:after {
+        display: block;
+    }
+
+    .checkbox-label {
+        color: #444;
+        font-size: 15px;
+        line-height: 1.4;
+    }
+
+    .age-verification-footer {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .cancel-button, .proceed-button {
+        padding: 12px 30px;
+        border-radius: 25px;
+        font-size: 15px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: all 0.2s;
+    }
+
+    .cancel-button {
+        background-color: #f1f1f1;
+        color: #666;
+        border: none;
+    }
+
+    .proceed-button {
+        background-color: #8b5cf6;
+        color: white;
+        border: none;
+    }
+
+    .cancel-button:hover {
+        background-color: #e5e5e5;
+    }
+
+    .proceed-button:hover {
+        background-color: #7c3aed;
+        transform: translateY(-2px);
+    }
+
+    .proceed-button:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+        transform: none;
+    }
+
+    @media (max-width: 768px) {
+        .age-verification-content {
+            padding: 30px 20px;
+        }
+
+        .age-verification-header h2 {
+            font-size: 24px;
+        }
+
+        .age-verification-subtitle {
+            font-size: 15px;
+        }
+
+        .checkbox-label {
+            font-size: 14px;
+        }
+
+        .cancel-button, .proceed-button {
+            padding: 10px 25px;
+            font-size: 14px;
+        }
+    }
+    </style>
+
+    <div class="cookie-banner" id="cookieBanner">
+        <div class="cookie-content">
+            <p>We use cookies to improve your experience on our site. With Chrome's new third-party cookie policy, some features may be limited.</p>
+            <div class="cookie-buttons">
+                <button id="acceptCookies" class="cookie-button accept">ACCEPT</button>
+                <button id="rejectCookies" class="cookie-button reject">REJECT</button>
+                <button id="customizeCookies" class="cookie-button customize">CUSTOMIZE →</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const mobileMenuClose = document.querySelector('.mobile-menu-close');
+
+    mobileMenuBtn.addEventListener('click', () => {
+        mobileMenu.classList.add('active');
+    });
+
+    mobileMenuClose.addEventListener('click', () => {
+        mobileMenu.classList.remove('active');
+    });
+
+    const ageVerificationModal = document.getElementById('ageVerificationModal');
+    const startChatBtn = document.getElementById('startChatBtn');
+    const volunteerBtn = document.getElementById('volunteerBtn');
+    const proceedAgeVerificationBtn = document.getElementById('proceedAgeVerification');
+    const cancelAgeVerificationBtn = document.getElementById('cancelAgeVerification');
+    const ageCheckbox = document.getElementById('ageCheckbox');
+    const termsCheckbox = document.getElementById('termsCheckbox');
+
+    function showAgeVerification(targetPage) {
+        ageVerificationModal.style.display = 'flex';
+        ageVerificationModal.dataset.target = targetPage;
+    }
+
+    function hideAgeVerification() {
+        ageVerificationModal.style.display = 'none';
+    }
+
+    startChatBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showAgeVerification('chat.html');
+    });
+
+    volunteerBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        showAgeVerification('volunteer.html');
+    });
+
+    proceedAgeVerificationBtn.addEventListener('click', () => {
+        if (ageCheckbox.checked && termsCheckbox.checked) {
+            const targetPage = ageVerificationModal.dataset.target;
+            localStorage.setItem('ageVerified', 'true');
+            window.location.href = targetPage;
+        } else {
+            alert('Please accept both conditions to proceed.');
+        }
+    });
+
+    cancelAgeVerificationBtn.addEventListener('click', () => {
+        hideAgeVerification();
+    });
+
+    if (localStorage.getItem('ageVerified') === 'true') {
+        startChatBtn.href = 'chat.html';
+        volunteerBtn.href = 'volunteer.html';
+    }
+
+    document.getElementById('userDisplayName').textContent = localStorage.getItem('username') || 'User';
+    
+    document.getElementById('logoutButton').addEventListener('click', function() {
+        localStorage.removeItem('isAuthenticated');
+        window.location.href = 'login.html';
+    });
+    
+    document.getElementById('mobileLogoutButton').addEventListener('click', function() {
+        localStorage.removeItem('isAuthenticated');
+        window.location.href = 'login.html';
+    });
+
+    const cookieBanner = document.getElementById('cookieBanner');
+    const acceptCookiesBtn = document.getElementById('acceptCookies');
+    const rejectCookiesBtn = document.getElementById('rejectCookies');
+    
+    if (cookieBanner && acceptCookiesBtn && rejectCookiesBtn) {
+        if (!localStorage.getItem('cookieChoice')) {
+            cookieBanner.style.display = 'block';
+            setTimeout(() => {
+                cookieBanner.classList.add('show');
+            }, 100);
+        } else {
+            cookieBanner.style.display = 'none';
+        }
+        
+        acceptCookiesBtn.addEventListener('click', () => {
+            localStorage.setItem('cookieChoice', 'accepted');
+            cookieBanner.classList.remove('show');
+            setTimeout(() => {
+                cookieBanner.style.display = 'none';
+            }, 300); 
+            enableThirdPartyCookies();
+        });
+        
+        rejectCookiesBtn.addEventListener('click', () => {
+            localStorage.setItem('cookieChoice', 'rejected');
+            cookieBanner.classList.remove('show');
+            setTimeout(() => {
+                cookieBanner.style.display = 'none';
+            }, 300); 
+            disableThirdPartyCookies();
+        });
+    
+        const customizeBtn = document.getElementById('customizeCookies');
+        if (customizeBtn) {
+            customizeBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                showCookieCustomizationPanel();
+            });
+        }
+    }
+
+    function showCookieCustomizationPanel() {
+        let customizationPanel = document.getElementById('cookieCustomizationPanel');
+        
+        if (!customizationPanel) {
+            customizationPanel = document.createElement('div');
+            customizationPanel.id = 'cookieCustomizationPanel';
+            customizationPanel.className = 'cookie-customization-panel';
+            customizationPanel.innerHTML = `
+                <div class="cookie-customization-content">
+                    <h2>Customize Your Cookies</h2>
+                    <p>Select which types of cookies you want to accept:</p>
+                    
+                    <div class="cookie-option">
+                        <div class="cookie-option-header">
+                            <label class="cookie-switch">
+                                <input type="checkbox" id="essentialCookies" checked disabled>
+                                <span class="cookie-slider"></span>
+                            </label>
+                            <div class="cookie-option-title">
+                                <h3>Essential Cookies</h3>
+                                <p>Necessary for the website to function. Cannot be disabled.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cookie-option">
+                        <div class="cookie-option-header">
+                            <label class="cookie-switch">
+                                <input type="checkbox" id="analyticsCookies">
+                                <span class="cookie-slider"></span>
+                            </label>
+                            <div class="cookie-option-title">
+                                <h3>Analytics Cookies</h3>
+                                <p>Help us understand how users interact with our website.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cookie-option">
+                        <div class="cookie-option-header">
+                            <label class="cookie-switch">
+                                <input type="checkbox" id="marketingCookies">
+                                <span class="cookie-slider"></span>
+                            </label>
+                            <div class="cookie-option-title">
+                                <h3>Marketing Cookies</h3>
+                                <p>Used to show you relevant advertisements.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cookie-option">
+                        <div class="cookie-option-header">
+                            <label class="cookie-switch">
+                                <input type="checkbox" id="preferencesCookies">
+                                <span class="cookie-slider"></span>
+                            </label>
+                            <div class="cookie-option-title">
+                                <h3>Preference Cookies</h3>
+                                <p>Store your preferences to improve your experience.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cookie-customization-buttons">
+                        <button id="saveCookiePreferences" class="primary-button">Save Preferences</button>
+                        <button id="acceptAllCookies" class="secondary-button">Accept All</button>
+                        <button id="rejectAllCookies" class="secondary-button">Reject All</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(customizationPanel);
+            
+            document.getElementById('saveCookiePreferences').addEventListener('click', saveCookiePreferences);
+            document.getElementById('acceptAllCookies').addEventListener('click', acceptAllCookies);
+            document.getElementById('rejectAllCookies').addEventListener('click', rejectAllCookies);
+            document.getElementById('analyticsCookies').addEventListener('change', updateCookiePreferences);
+            document.getElementById('marketingCookies').addEventListener('change', updateCookiePreferences);
+            document.getElementById('preferencesCookies').addEventListener('change', updateCookiePreferences);
+        }
+        const analyticsEnabled = localStorage.getItem('analyticsCookies') === 'true';
+        const marketingEnabled = localStorage.getItem('marketingCookies') === 'true';
+        const preferencesEnabled = localStorage.getItem('preferencesCookies') === 'true';
+        
+        document.getElementById('analyticsCookies').checked = analyticsEnabled;
+        document.getElementById('marketingCookies').checked = marketingEnabled;
+        document.getElementById('preferencesCookies').checked = preferencesEnabled;
+        customizationPanel.classList.add('show');
+    }
+
+    function saveCookiePreferences() {
+        const analyticsEnabled = document.getElementById('analyticsCookies').checked;
+        const marketingEnabled = document.getElementById('marketingCookies').checked;
+        const preferencesEnabled = document.getElementById('preferencesCookies').checked;
+        localStorage.setItem('cookieChoice', 'customized');
+        localStorage.setItem('analyticsCookies', analyticsEnabled);
+        localStorage.setItem('marketingCookies', marketingEnabled);
+        localStorage.setItem('preferencesCookies', preferencesEnabled);
+        
+        applyCookiePreferences();
+        
+        document.getElementById('cookieCustomizationPanel').classList.remove('show');
+        
+        const cookieBanner = document.getElementById('cookieBanner');
+        if (cookieBanner) {
+            cookieBanner.classList.remove('show');
+            setTimeout(() => {
+                cookieBanner.style.display = 'none';
+            }, 300);
+        }
+        showCookieConfirmation('Your cookie preferences have been saved');
+    }
+
+    function showCookieConfirmation(message) {
+        let confirmationElement = document.getElementById('cookieConfirmation');
+        if (!confirmationElement) {
+            confirmationElement = document.createElement('div');
+            confirmationElement.id = 'cookieConfirmation';
+            confirmationElement.className = 'cookie-confirmation';
+            document.body.appendChild(confirmationElement);
+        }
+        confirmationElement.textContent = message;
+        confirmationElement.classList.add('show');
+        setTimeout(() => {
+            confirmationElement.classList.remove('show');
+        }, 3000);
+    }
+
+    function acceptAllCookies() {
+        document.getElementById('analyticsCookies').checked = true;
+        document.getElementById('marketingCookies').checked = true;
+        document.getElementById('preferencesCookies').checked = true;
+        
+        saveCookiePreferences();
+    }
+
+    function rejectAllCookies() {
+        document.getElementById('analyticsCookies').checked = false;
+        document.getElementById('marketingCookies').checked = false;
+        document.getElementById('preferencesCookies').checked = false;
+        
+        saveCookiePreferences();
+    }
+
+    function updateCookiePreferences() {
+        console.log('Cookie preferences updated');
+    }
+
+    function applyCookiePreferences() {
+        const analyticsEnabled = localStorage.getItem('analyticsCookies') === 'true';
+        const marketingEnabled = localStorage.getItem('marketingCookies') === 'true';
+        const preferencesEnabled = localStorage.getItem('preferencesCookies') === 'true';
+        
+        if (analyticsEnabled) {
+            enableAnalyticsCookies();
+        } else {
+            disableAnalyticsCookies();
+        }
+        
+        if (marketingEnabled) {
+            enableMarketingCookies();
+        } else {
+            disableMarketingCookies();
+        }
+        
+        if (preferencesEnabled) {
+            enablePreferencesCookies();
+        } else {
+            disablePreferencesCookies();
+        }
+    }
+
+    function enableAnalyticsCookies() {
+        if (typeof analytics !== 'undefined') {
+            analytics.setAnalyticsCollectionEnabled(true);
+        }
+    }
+
+    function disableAnalyticsCookies() {
+        if (typeof analytics !== 'undefined') {
+            analytics.setAnalyticsCollectionEnabled(false);
+        }
+    }
+
+    function enableMarketingCookies() {
+        // Implementazione per i cookie di marketing
+    }
+
+    function disableMarketingCookies() {
+        // Implementazione per disabilitare i cookie di marketing
+    }
+
+    function enablePreferencesCookies() {
+        // Implementazione per i cookie di preferenze
+    }
+
+    function disablePreferencesCookies() {
+        // Implementazione per disabilitare i cookie di preferenze
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const mobileMenuClose = document.querySelector('.mobile-menu-close');
+        const overlay = document.createElement('div');
+        overlay.className = 'mobile-menu-overlay';
+        document.body.appendChild(overlay);
+
+        if (mobileMenuBtn && mobileMenu && mobileMenuClose) {
+            function openMobileMenu() {
+                mobileMenu.classList.add('active');
+                overlay.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeMobileMenu() {
+                mobileMenu.classList.remove('active');
+                overlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+
+            mobileMenuBtn.addEventListener('click', openMobileMenu);
+            mobileMenuClose.addEventListener('click', closeMobileMenu);
+            overlay.addEventListener('click', closeMobileMenu);
+
+            // Close menu when clicking on a link
+            const mobileMenuLinks = mobileMenu.querySelectorAll('a');
+            mobileMenuLinks.forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+        }
+    });
+    </script>
+</body>
+</html> 

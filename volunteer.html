@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Volunteers - LendAnEar</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        // Controllo autenticazione
+        if (localStorage.getItem('isAuthenticated') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="development-banner">
+        <p>⚠️ This website is currently under development. Some features may not work as expected. We appreciate your patience and feedback.</p>
+    </div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">LENDANEAR</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="about.html">About Us</a>
+                <a href="support.html">Support</a>
+                <a href="faq.html">FAQ</a>
+                <a href="contact.html">Contact</a>
+                <div class="user-info">
+                    <span id="userDisplayName">User</span>
+                    <button class="logout-button" id="logoutButton">Logout</button>
+                </div>
+            </div>
+            <button class="mobile-menu-btn">☰</button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="volunteer-section">
+            <div class="volunteer-content">
+                <h1>Volunteer Area</h1>
+                
+                <div class="volunteer-status">
+                    <div class="status-card">
+                        <h2>Volunteer Status</h2>
+                        <div class="status-info">
+                            <p>Volunteers online: <span id="onlineCount">0</span></p>
+                            <p>People waiting: <span id="queueCount">0</span></p>
+                        </div>
+                        <div class="status-toggle">
+                            <label class="switch">
+                                <input type="checkbox" id="onlineToggle">
+                                <span class="slider round"></span>
+                                <span class="switch-label">Status</span>
+                            </label>
+                            <span id="statusText">Offline</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="volunteer-chat-container" id="volunteerChatContainer" style="display: none;">
+                    <div class="chat-header">
+                        <h2>Chat with User</h2>
+                        <p>Anonymous chat in progress</p>
+                    </div>
+                    <div class="chat-messages" id="volunteerChatMessages">
+                        <div class="message system-message">
+                            <div class="message-content">
+                                <p>Welcome to the volunteer area. When a user connects, you can start chatting with them completely anonymously.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="chat-input">
+                        <form id="volunteerChatForm">
+                            <input type="text" id="volunteerMessageInput" placeholder="Type a message..." autocomplete="off">
+                            <button type="submit">Send</button>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="volunteer-guidelines">
+                    <h2>Volunteer Guidelines</h2>
+                    
+                    <div class="guidelines-warning">
+                        <p><strong style="color: #d32f2f;">⚠️ IMPORTANT WARNING:</strong> This platform is designed to help people who are experiencing emotional distress. Using this site as a troll tool is not only against our guidelines but also harmful to vulnerable individuals. Such behavior will result in immediate ip ban and may be reported to relevant authorities.</p>
+                    </div>
+                    
+                    <p style="color: #d32f2f; font-weight: 700;">IMPORTANT WARNING</p>
+                    <p style="font-weight: 600;">As a volunteer, you are not a licensed mental health professional. Your role is to provide emotional support and a listening ear. You should:</p>
+                    
+                    <ul>
+                        <li>Don't swear,judmental,racist,sexist or offensive</li>
+                        <li>Always maintain an empathetic and non-judgmental tone</li>
+                        <li>Respect the user's anonymity</li>
+                        <li>Never share personal information</li>
+                        <li>If the user is in crisis, suggest contacting emergency services</li>
+                        <li>Do not offer medical or psychological diagnoses</li>
+                        <li>If you feel uncomfortable, you can end the conversation at any time</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="cookies.html">Cookie Policy</a>
+            </div>
+            <div class="copyright">
+                © 2025 LendAnEar. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <div class="mobile-menu">
+        <div class="mobile-menu-header">
+            <a href="index.html" class="logo">LENDANEAR</a>
+            <button class="mobile-menu-close">×</button>
+        </div>
+        <div class="mobile-menu-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="support.html">Support</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Contact</a>
+            <button class="logout-button" id="mobileLogoutButton">Logout</button>
+        </div>
+    </div>
+
+    <div class="cookie-banner">
+        <div class="cookie-content">
+            <p>We use cookies to improve your experience on our site. With Chrome's new third-party cookie policy, some features may be limited.</p>
+            <div class="cookie-buttons">
+                <button class="accept-all">Accept</button>
+                <button class="reject-all">Reject</button>
+                <a href="#" class="cookie-link">Customize</a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    .guidelines-warning {
+        background-color: #ffebee;
+        border-left: 4px solid #d32f2f;
+        padding: 15px;
+        margin-bottom: 20px;
+        border-radius: 4px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .guidelines-warning p {
+        margin: 0;
+        color: #d32f2f;
+        font-size: 16px;
+        line-height: 1.5;
+    }
+
+    .guidelines-warning strong {
+        color: #d32f2f;
+    }
+    </style>
+
+    <script>
+        // Check age verification
+        if (localStorage.getItem('ageVerified') !== 'true') {
+            window.location.href = 'index.html';
+        }
+
+        // Mobile menu functionality
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const mobileMenuClose = document.querySelector('.mobile-menu-close');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+        });
+
+        mobileMenuClose.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize online volunteers count if not already set
+            if (!localStorage.getItem('onlineVolunteers')) {
+                localStorage.setItem('onlineVolunteers', '0');
+            }
+            
+            // Update online count display
+            const onlineCountElement = document.getElementById('onlineCount');
+            if (onlineCountElement) {
+                const currentOnlineVolunteers = parseInt(localStorage.getItem('onlineVolunteers') || '0');
+                onlineCountElement.textContent = currentOnlineVolunteers;
+            }
+        });
+
+        // Volunteer online status
+        const onlineToggle = document.getElementById('onlineToggle');
+        const statusText = document.getElementById('statusText');
+        const volunteerChatContainer = document.getElementById('volunteerChatContainer');
+        const onlineCount = document.getElementById('onlineCount');
+        const queueCount = document.getElementById('queueCount');
+        
+        // Simulated data - in a real app, this would come from a server
+        let isOnline = false;
+        let currentChat = null;
+        let connectedUser = null;
+        
+        // Check for users in queue when going online
+        if (onlineToggle) {
+            onlineToggle.addEventListener('change', function() {
+                isOnline = this.checked;
+                if (isOnline) {
+                    if (statusText) statusText.textContent = 'Online';
+                    if (statusText) statusText.classList.add('online');
+                    if (volunteerChatContainer) volunteerChatContainer.style.display = 'flex';
+                    if (onlineCount) onlineCount.textContent = parseInt(onlineCount.textContent) + 1;
+                    
+                    // Update online volunteers count in localStorage
+                    const currentOnlineVolunteers = parseInt(localStorage.getItem('onlineVolunteers') || '0');
+                    localStorage.setItem('onlineVolunteers', currentOnlineVolunteers + 1);
+                    
+                    // Check if there are users in queue
+                    checkQueueForUsers();
+                } else {
+                    if (statusText) statusText.textContent = 'Offline';
+                    if (statusText) statusText.classList.remove('online');
+                    if (volunteerChatContainer) volunteerChatContainer.style.display = 'none';
+                    if (onlineCount) onlineCount.textContent = Math.max(0, parseInt(onlineCount.textContent) - 1);
+                    
+                    // Update online volunteers count in localStorage
+                    const currentOnlineVolunteers = parseInt(localStorage.getItem('onlineVolunteers') || '0');
+                    localStorage.setItem('onlineVolunteers', Math.max(0, currentOnlineVolunteers - 1));
+                    
+                    // Cleanup when going offline
+                    cleanupOnOffline();
+                }
+            });
+        }
+        
+        // Function to check for users in queue
+        function checkQueueForUsers() {
+            // In a real app, this would be an API call to check the queue
+            // For simulation, we'll check localStorage
+            const queueData = localStorage.getItem('userQueue');
+            if (queueData) {
+                const queue = JSON.parse(queueData);
+                
+                // Clean up inactive users
+                const now = new Date().getTime();
+                const activeQueue = queue.filter(user => {
+                    const lastActive = new Date(user.lastActive).getTime();
+                    return (now - lastActive) < 10000; // 10 seconds
+                });
+                
+                // Update queue count
+                if (queueCount) queueCount.textContent = activeQueue.length;
+                
+                if (activeQueue.length > 0 && !currentChat) {
+                    // Connect with the first user in queue
+                    connectWithUser(activeQueue[0]);
+                    // Remove user from queue
+                    activeQueue.shift();
+                    localStorage.setItem('userQueue', JSON.stringify(activeQueue));
+                }
+            }
+        }
+        
+        // Check queue periodically
+        setInterval(() => {
+            if (isOnline && !currentChat) {
+                checkQueueForUsers();
+            }
+        }, 5000);
+        
+        function connectWithUser(user) {
+            connectedUser = user;
+            currentChat = {
+                id: user.id || 'user-' + Math.floor(Math.random() * 1000),
+                messages: []
+            };
+            
+            // Add user to connected users list
+            const connectedUsers = JSON.parse(localStorage.getItem('connectedUsers') || '[]');
+            if (!connectedUsers.includes(user.id)) {
+                connectedUsers.push(user.id);
+                localStorage.setItem('connectedUsers', JSON.stringify(connectedUsers));
+            }
+            
+            // Add system message
+            addMessage("A user has connected. You can start chatting.", 'system');
+            
+            // If user has previous messages, load them
+            if (user.messages && user.messages.length > 0) {
+                user.messages.forEach(msg => {
+                    addMessage(msg.text, msg.sender === 'user' ? 'user' : 'ai');
+                });
+            }
+        }
+        
+        function endChat() {
+            addMessage("The chat has been ended.", 'system');
+            
+            // Save chat history to localStorage for the user to see later
+            if (connectedUser) {
+                const chatHistory = {
+                    id: currentChat.id,
+                    messages: currentChat.messages,
+                    timestamp: new Date().toISOString()
+                };
+                
+                // Save to localStorage
+                const userChats = JSON.parse(localStorage.getItem('userChats') || '[]');
+                userChats.push(chatHistory);
+                localStorage.setItem('userChats', JSON.stringify(userChats));
+                
+                // Remove user from connected users list
+                const connectedUsers = JSON.parse(localStorage.getItem('connectedUsers') || '[]');
+                const updatedConnectedUsers = connectedUsers.filter(id => id !== connectedUser.id);
+                localStorage.setItem('connectedUsers', JSON.stringify(updatedConnectedUsers));
+
+                // Update user's state in localStorage
+                const userQueue = JSON.parse(localStorage.getItem('userQueue') || '[]');
+                const userIndex = userQueue.findIndex(user => user.id === connectedUser.id);
+                if (userIndex !== -1) {
+                    userQueue[userIndex].connectedToVolunteer = false;
+                    userQueue[userIndex].volunteerAccepted = false;
+                    localStorage.setItem('userQueue', JSON.stringify(userQueue));
+                }
+
+                // Add a system message for the user
+                const userMessages = JSON.parse(localStorage.getItem('userMessages') || '[]');
+                userMessages.push({
+                    userId: connectedUser.id,
+                    message: "The volunteer has ended the chat. You can continue chatting with the AI or join the queue again.",
+                    sender: 'system',
+                    timestamp: new Date().toISOString()
+                });
+                localStorage.setItem('userMessages', JSON.stringify(userMessages));
+            }
+            
+            currentChat = null;
+            connectedUser = null;
+            
+            // Check if there are more users in queue
+            if (isOnline) {
+                checkQueueForUsers();
+            }
+        }
+        
+        // Add cleanup function for when volunteer goes offline
+        function cleanupOnOffline() {
+            if (currentChat) {
+                endChat();
+            }
+            
+            // Clear any stale connections
+            const connectedUsers = JSON.parse(localStorage.getItem('connectedUsers') || '[]');
+            const userQueue = JSON.parse(localStorage.getItem('userQueue') || '[]');
+            
+            // Update all users' states
+            userQueue.forEach(user => {
+                if (connectedUsers.includes(user.id)) {
+                    user.connectedToVolunteer = false;
+                    user.volunteerAccepted = false;
+                    
+                    // Add system message for each user
+                    const userMessages = JSON.parse(localStorage.getItem('userMessages') || '[]');
+                    userMessages.push({
+                        userId: user.id,
+                        message: "The volunteer has gone offline. You can continue chatting with the AI or join the queue again.",
+                        sender: 'system',
+                        timestamp: new Date().toISOString()
+                    });
+                    localStorage.setItem('userMessages', JSON.stringify(userMessages));
+                }
+            });
+            
+            localStorage.setItem('userQueue', JSON.stringify(userQueue));
+            localStorage.setItem('connectedUsers', JSON.stringify([]));
+        }
+        
+        // Chat functionality
+        const volunteerChatForm = document.getElementById('volunteerChatForm');
+        const volunteerMessageInput = document.getElementById('volunteerMessageInput');
+        const volunteerChatMessages = document.getElementById('volunteerChatMessages');
+        
+        if (volunteerChatForm && volunteerMessageInput && volunteerChatMessages) {
+            volunteerChatForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const message = volunteerMessageInput.value.trim();
+                if (message && currentChat && connectedUser) {
+                    console.log('Sending message to user:', connectedUser.id);
+                    addMessage(message, 'volunteer');
+                    volunteerMessageInput.value = '';
+                    
+                    // Save message to localStorage for the user to see
+                    const userMessages = JSON.parse(localStorage.getItem('userMessages') || '[]');
+                    userMessages.push({
+                        userId: connectedUser.id,
+                        message: message,
+                        sender: 'volunteer',
+                        timestamp: new Date().toISOString()
+                    });
+                    localStorage.setItem('userMessages', JSON.stringify(userMessages));
+                    
+                    // Also save to a specific key for the current user
+                    const userSpecificMessages = JSON.parse(localStorage.getItem(`userMessages_${connectedUser.id}`) || '[]');
+                    userSpecificMessages.push({
+                        message: message,
+                        sender: 'volunteer',
+                        timestamp: new Date().toISOString()
+                    });
+                    localStorage.setItem(`userMessages_${connectedUser.id}`, JSON.stringify(userSpecificMessages));
+                    
+                    console.log('Message saved to localStorage:', userMessages[userMessages.length - 1]);
+                } else {
+                    console.log('Cannot send message:', { 
+                        hasMessage: !!message, 
+                        hasCurrentChat: !!currentChat, 
+                        hasConnectedUser: !!connectedUser 
+                    });
+                }
+            });
+        }
+        
+        function addMessage(text, sender) {
+            if (!volunteerChatMessages) return;
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <p>${text}</p>
+                </div>
+            `;
+            volunteerChatMessages.appendChild(messageDiv);
+            volunteerChatMessages.scrollTop = volunteerChatMessages.scrollHeight;
+            
+            if (currentChat) {
+                currentChat.messages.push({ sender, text });
+            }
+        }
+        
+        // Add end chat button
+        const chatHeader = document.querySelector('.chat-header');
+        if (chatHeader) {
+            const endChatButton = document.createElement('button');
+            endChatButton.className = 'end-chat-button';
+            endChatButton.textContent = 'End Chat';
+            endChatButton.addEventListener('click', endChat);
+            chatHeader.appendChild(endChatButton);
+        }
+        
+        // Check for new messages periodically
+        setInterval(() => {
+            if (connectedUser) {
+                checkForUserMessages();
+            }
+        }, 3000);
+        
+        // Check for user messages
+        function checkForUserMessages() {
+            // In a real app, this would be an API call
+            // For simulation, we'll check localStorage
+            const userMessages = JSON.parse(localStorage.getItem('userMessages') || '[]');
+            const connectedUsers = JSON.parse(localStorage.getItem('connectedUsers') || '[]');
+            
+            console.log('Checking for user messages...');
+            console.log('Connected users:', connectedUsers);
+            console.log('Current user:', connectedUser);
+            
+            // Only show messages from connected users
+            const newMessages = userMessages.filter(msg => 
+                connectedUsers.includes(msg.userId) && 
+                msg.sender === 'user' &&
+                (!currentChat || !currentChat.messages.some(m => m.text === msg.message))
+            );
+            
+            console.log('New messages found:', newMessages);
+            
+            if (newMessages.length > 0) {
+                newMessages.forEach(msg => {
+                    console.log('Adding message:', msg);
+                    addMessage(msg.message, 'user');
+                    if (currentChat) {
+                        currentChat.messages.push({ sender: 'user', text: msg.message });
+                    }
+                });
+            }
+        }
+
+        // Handle browser close/refresh
+        window.addEventListener('beforeunload', () => {
+            if (isOnline) {
+                // Decrement online volunteers count
+                const currentOnlineVolunteers = parseInt(localStorage.getItem('onlineVolunteers') || '0');
+                localStorage.setItem('onlineVolunteers', Math.max(0, currentOnlineVolunteers - 1));
+                
+                // Cleanup when closing/refreshing
+                cleanupOnOffline();
+            }
+        });
+
+        // Cookie management
+        const cookieBanner = document.querySelector('.cookie-banner');
+        const acceptCookiesBtn = document.querySelector('.accept-all');
+        const rejectCookiesBtn = document.querySelector('.reject-all');
+        
+        // Check if elements exist before using them
+        if (cookieBanner && acceptCookiesBtn && rejectCookiesBtn) {
+            // Check if user has already made a choice
+            if (!localStorage.getItem('cookieChoice')) {
+                cookieBanner.style.display = 'block';
+            }
+            
+            acceptCookiesBtn.addEventListener('click', () => {
+                localStorage.setItem('cookieChoice', 'accepted');
+                cookieBanner.style.display = 'none';
+                // Enable third-party cookies functionality
+                enableThirdPartyCookies();
+            });
+            
+            rejectCookiesBtn.addEventListener('click', () => {
+                localStorage.setItem('cookieChoice', 'rejected');
+                cookieBanner.style.display = 'none';
+                // Disable third-party cookies functionality
+                disableThirdPartyCookies();
+            });
+        }
+        
+        function enableThirdPartyCookies() {
+            // Enable Firebase Analytics
+            if (typeof analytics !== 'undefined') {
+                analytics.setAnalyticsCollectionEnabled(true);
+            }
+        }
+        
+        function disableThirdPartyCookies() {
+            // Disable Firebase Analytics
+            if (typeof analytics !== 'undefined') {
+                analytics.setAnalyticsCollectionEnabled(false);
+            }
+        }
+
+        // Mostra il nome utente
+        document.getElementById('userDisplayName').textContent = localStorage.getItem('username') || 'User';
+        
+        // Gestione del logout
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            localStorage.removeItem('isAuthenticated');
+            window.location.href = 'login.html';
+        });
+        
+        document.getElementById('mobileLogoutButton').addEventListener('click', function() {
+            localStorage.removeItem('isAuthenticated');
+            window.location.href = 'login.html';
+        });
+    </script>
+</body>
+</html> 

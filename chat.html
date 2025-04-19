@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - LendAnEar</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-analytics.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDisG9a7mdb3U7T26sA62jR5MRPvlWs-Hg",
+            authDomain: "lendanear-app.firebaseapp.com",
+            projectId: "lendanear-app",
+            storageBucket: "lendanear-app.firebasestorage.app",
+            messagingSenderId: "680121471591",
+            appId: "1:680121471591:web:7fda16aeb20109136c7ac2",
+            measurementId: "G-610TKLESXL"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+    </script>
+    <script src="cookie-manager.js"></script>
+    <script>
+        if (localStorage.getItem('isAuthenticated') !== 'true') {
+            window.location.href = 'login.html';
+        }
+    </script>
+</head>
+<body>
+    <div class="development-banner">
+        <p>⚠️ This website is currently under development. Some features may not work as expected. We appreciate your patience and feedback.</p>
+    </div>
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo">LendAnEar</a>
+            <div class="nav-links">
+                <a href="index.html">Home</a>
+                <a href="about.html">About Us</a>
+                <a href="support.html">Support</a>
+                <a href="faq.html">FAQ</a>
+                <a href="contact.html">Contact</a>
+                <div class="user-info">
+                    <span id="userDisplayName">User</span>
+                    <button class="logout-button" id="logoutButton">Logout</button>
+                </div>
+            </div>
+            <button class="mobile-menu-btn">☰</button>
+        </div>
+    </nav>
+
+    <main>
+        <section class="chat-section">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h2>Anonymous Chat</h2>
+                    <p>You are in queue to talk with a volunteer</p>
+                    <div class="queue-status">
+                        <p>Queue position: <span id="queuePosition">1</span></p>
+                        <p>Estimated wait time: <span id="waitTime">~5 minutes</span></p>
+                    </div>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message system-message welcome-message" id="welcomeMessage">
+                        <div class="message-content">
+                            <p>Welcome to LendAnEar. While waiting for a volunteer, you can chat with our AI support. The conversation is completely anonymous.</p>
+                        </div>
+                    </div>
+                    <div class="message encouragement-message">
+                        <div class="message-content">
+                            <p>We're proud of you just by joining this chat. Taking the first step to talk about your feelings is a sign of strength.</p>
+                        </div>
+                    </div>
+                    <div class="message ai-message">
+                        <div class="message-content">
+                            <p>Hello! I'm LENDANEAR AI. How can I help you today?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <form id="chatForm">
+                        <input type="text" id="messageInput" placeholder="Type a message..." autocomplete="off">
+                        <button type="submit">Send</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+        
+        <div class="modal" id="volunteerModal">
+            <div class="modal-content">
+                <h2>Volunteer Available</h2>
+                <p>A volunteer is now available to chat with you. Would you like to connect with them?</p>
+                <div class="modal-buttons">
+                    <button id="acceptVolunteer" class="primary-button">Connect with Volunteer</button>
+                    <button id="declineVolunteer" class="secondary-button">Stay with AI</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="fixed-queue-button" id="rejoinQueueButton">
+            <button class="primary-button">Rejoin Queue</button>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-links">
+                <a href="privacy.html">Privacy Policy</a>
+                <a href="terms.html">Terms of Service</a>
+                <a href="cookies.html">Cookie Policy</a>
+            </div>
+            <div class="copyright">
+                © 2025 LendAnEar. All rights reserved.
+            </div>
+        </div>
+    </footer>
+
+    <div class="mobile-menu">
+        <div class="mobile-menu-header">
+            <a href="index.html" class="logo">LENDANEAR</a>
+            <button class="mobile-menu-close">×</button>
+        </div>
+        <div class="mobile-menu-links">
+            <a href="index.html">Home</a>
+            <a href="about.html">About Us</a>
+            <a href="support.html">Support</a>
+            <a href="faq.html">FAQ</a>
+            <a href="contact.html">Contact</a>
+            <button class="logout-button" id="mobileLogoutButton">Logout</button>
+        </div>
+    </div>
+
+    <style>
+    .fixed-queue-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 100;
+    }
+
+    .fixed-queue-button button {
+        padding: 12px 24px;
+        font-size: 16px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        transition: all 0.3s ease;
+    }
+
+    .fixed-queue-button button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+
+    .encouragement-message {
+        background-color: #f0f7ff;
+        border-left: 4px solid #4a90e2;
+        margin: 10px 0;
+    }
+
+    .encouragement-message .message-content {
+        color: #2c3e50;
+        font-style: italic;
+    }
+
+    .chat-container {
+        max-width: 1000px;
+        width: 95%;
+        margin: 0 auto;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .chat-header {
+        background: #f8f9fa;
+        padding: 15px 20px;
+        border-bottom: 1px solid #e9ecef;
+    }
+
+    .chat-header h2 {
+        margin: 0;
+        font-size: 1.5rem;
+        color: #333;
+    }
+
+    .chat-messages {
+        height: 600px;
+        overflow-y: auto;
+        padding: 20px;
+    }
+
+    .message {
+        margin-bottom: 20px;
+        max-width: 85%;
+    }
+
+    .user-message {
+        margin-left: auto;
+        background: #007bff;
+        color: white;
+        border-radius: 18px 18px 0 18px;
+        padding: 10px 15px;
+    }
+
+    .ai-message, .system-message, .volunteer-message {
+        margin-right: auto;
+        background: #f1f1f1;
+        color: #333;
+        border-radius: 18px 18px 18px 0;
+        padding: 10px 15px;
+    }
+
+    .chat-input {
+        padding: 20px;
+        border-top: 1px solid #e9ecef;
+    }
+
+    .chat-input form {
+        display: flex;
+        gap: 10px;
+    }
+
+    .chat-input input {
+        flex: 1;
+        padding: 15px;
+        border: 1px solid #ced4da;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+
+    .chat-input button {
+        background: #007bff;
+        color: white;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-weight: 500;
+        transition: background 0.3s;
+        font-size: 16px;
+    }
+
+    .chat-input button:hover {
+        background: #0056b3;
+    }
+
+    .welcome-message {
+        margin: 0 auto;
+        max-width: 90%;
+        text-align: center;
+        background-color: #f0f7ff;
+        border: 1px solid #4a90e2;
+        border-radius: 12px;
+        padding: 15px;
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(-10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-10px); }
+    }
+    
+    .welcome-message.fade-out {
+        animation: fadeOut 0.5s ease-in-out forwards;
+    }
+
+    .no-volunteer-message {
+        margin: 20px auto;
+        max-width: 90%;
+        text-align: center;
+        background-color: #f8f9fa;
+        border: 1px solid #dee2e6;
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+        animation: fadeIn 0.5s ease-in-out;
+    }
+    
+    .no-volunteer-message .message-content {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    
+    .no-volunteer-message p {
+        margin: 0;
+    }
+    
+    .no-volunteer-message p:first-child {
+        font-size: 1.1em;
+        color: #495057;
+    }
+    
+    .no-volunteer-message p:not(:first-child) {
+        color: #6c757d;
+        font-size: 0.95em;
+    }
+    </style>
+
+    <script>
+        if (localStorage.getItem('ageVerified') !== 'true') {
+            window.location.href = 'index.html';
+        }
+
+        const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
+        const mobileMenu = document.querySelector('.mobile-menu');
+        const mobileMenuClose = document.querySelector('.mobile-menu-close');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+        });
+
+        mobileMenuClose.addEventListener('click', () => {
+            mobileMenu.classList.remove('active');
+        });
+
+        const chatForm = document.getElementById('chatForm');
+        const messageInput = document.getElementById('messageInput');
+        const chatMessages = document.getElementById('chatMessages');
+        const queuePosition = document.getElementById('queuePosition');
+        const waitTime = document.getElementById('waitTime');
+        const volunteerModal = document.getElementById('volunteerModal');
+        const acceptVolunteerBtn = document.getElementById('acceptVolunteer');
+        const declineVolunteerBtn = document.getElementById('declineVolunteer');
+
+        const userId = 'user-' + Math.floor(Math.random() * 1000000);
+
+        let userData = {
+            id: userId,
+            messages: [],
+            inQueue: true,
+            position: 1,
+            connectedToVolunteer: false,
+            lastActive: new Date().toISOString(),
+            volunteerAvailable: false,
+            volunteerAccepted: false
+        };
+        
+        // Hugging Face API configuration
+        const tokenParts = [
+            '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'.substring(0, 10),
+            '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'.substring(10, 20),
+            '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'.substring(20)
+        ];
+        
+        function getToken() {
+            return tokenParts[0] + tokenParts[1] + tokenParts[2];
+        }
+        
+        const HF_API_TOKEN = getToken();
+        const HF_API_URL = 'https://api-inference.huggingface.co/models/facebook/blenderbot-400M-distill';
+
+        async function getAIResponse(userMessage) {
+            try {
+                const response = await fetch(HF_API_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${HF_API_TOKEN}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        inputs: userMessage,
+                        parameters: {
+                            max_length: 80,
+                            temperature: 0.9,
+                            top_p: 0.95,
+                            do_sample: true,
+                            repetition_penalty: 1.2
+                        }
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+                
+                const data = await response.json();
+                return data[0].generated_text;
+            } catch (error) {
+                console.error('Error getting AI response:', error);
+                const fallbackResponses = [
+                    "Capisco che stai attraversando un momento difficile.",
+                    "È importante dare spazio alle tue emozioni in questo momento.",
+                    "Sono qui per ascoltarti, senza giudizio.",
+                    "A volte parlare di ciò che proviamo può aiutarci a sentirci meglio.",
+                    "Non sei solo in questo momento.",
+                    "È normale provare emozioni intense in situazioni difficili.",
+                    "Grazie per aver condiviso questo con me.",
+                    "Sono qui per supportarti in questo momento.",
+                    "Prenditi il tempo necessario per elaborare ciò che stai provando.",
+                    "A volte il semplice fatto di essere ascoltati può fare la differenza."
+                ];
+                return fallbackResponses[Math.floor(Math.random() * fallbackResponses.length)];
+            }
+        }
+        
+
+        setInterval(() => {
+            userData.lastActive = new Date().toISOString();
+            if (userData.inQueue) {
+                const queueData = localStorage.getItem('userQueue');
+                if (queueData) {
+                    const queue = JSON.parse(queueData);
+                    const userIndex = queue.findIndex(user => user.id === userId);
+                    if (userIndex !== -1) {
+                        queue[userIndex].lastActive = userData.lastActive;
+                        localStorage.setItem('userQueue', JSON.stringify(queue));
+                    }
+                }
+            }
+        }, 5000);
+
+        window.addEventListener('beforeunload', () => {
+            if (userData.inQueue) {
+                const queueData = localStorage.getItem('userQueue');
+                if (queueData) {
+                    const queue = JSON.parse(queueData);
+                    const updatedQueue = queue.filter(user => user.id !== userId);
+                    localStorage.setItem('userQueue', JSON.stringify(updatedQueue));
+                }
+            }
+        });
+  
+        function addUserToQueue() {
+
+            const queueData = localStorage.getItem('userQueue');
+            const queue = queueData ? JSON.parse(queueData) : [];
+
+            const now = new Date().getTime();
+            const activeQueue = queue.filter(user => {
+                const lastActive = new Date(user.lastActive).getTime();
+                return (now - lastActive) < 100000;
+            });
+       
+            if (!activeQueue.some(user => user.id === userId)) {
+                activeQueue.push(userData);
+                localStorage.setItem('userQueue', JSON.stringify(activeQueue));
+
+                userData.position = activeQueue.indexOf(userData) + 1;
+                queuePosition.textContent = userData.position;
+
+                const estimatedWaitTime = Math.max(1, Math.floor(userData.position * 2.5));
+                waitTime.textContent = `~${estimatedWaitTime} minutes`;
+            }
+        }
+  
+        function checkForVolunteerMessages() {
+            // In a real app, this would be an API call
+            // For simulation, we'll check localStorage
+            const userMessages = JSON.parse(localStorage.getItem('userMessages') || '[]');
+            const connectedUsers = JSON.parse(localStorage.getItem('connectedUsers') || '[]');
+            
+            console.log('Checking for volunteer messages...');
+            console.log('Connected users:', connectedUsers);
+            console.log('Current user ID:', userId);
+ 
+            const newMessages = userMessages.filter(msg => 
+                msg.userId === userId && 
+                msg.sender === 'volunteer' &&
+                !userData.messages.some(m => m.text === msg.message)
+            );
+            
+            console.log('New messages found:', newMessages);
+            
+            if (newMessages.length > 0) {
+                newMessages.forEach(msg => {
+                    console.log('Adding message:', msg);
+                    addMessage(msg.message, 'volunteer');
+                    userData.messages.push({ sender: 'volunteer', text: msg.message });
+                });
+            }
+ 
+            const userSpecificMessages = JSON.parse(localStorage.getItem(`userMessages_${userId}`) || '[]');
+            const newSpecificMessages = userSpecificMessages.filter(msg => 
+                msg.sender === 'volunteer' &&
+                !userData.messages.some(m => m.text === msg.message)
+            );
+            
+            console.log('New specific messages found:', newSpecificMessages);
+            
+            if (newSpecificMessages.length > 0) {
+                newSpecificMessages.forEach(msg => {
+                    console.log('Adding specific message:', msg);
+                    addMessage(msg.message, 'volunteer');
+                    userData.messages.push({ sender: 'volunteer', text: msg.message });
+                });
+            }
+        }
+
+        function checkVolunteerConnection() {
+
+            const connectedUsers = JSON.parse(localStorage.getItem('connectedUsers') || '[]');
+            console.log('Checking connection for user:', userId);
+            console.log('Connected users:', connectedUsers);
+
+            if (connectedUsers.includes(userId) && userData.volunteerAccepted) {
+                console.log('User connected to volunteer!');
+                userData.connectedToVolunteer = true;
+                userData.inQueue = false;
+ 
+                document.querySelector('.chat-header p').textContent = 'Connected to a volunteer';
+                document.querySelector('.queue-status').style.display = 'none';
+
+                addMessage("You are now connected to a volunteer. You can start chatting.", 'system');
+
+                updateRejoinButtonText();
+      
+                const queueData = localStorage.getItem('userQueue');
+                if (queueData) {
+                    const queue = JSON.parse(queueData);
+                    const updatedQueue = queue.filter(user => user.id !== userId);
+                    localStorage.setItem('userQueue', JSON.stringify(updatedQueue));
+                }
+            }
+        }
+        
+
+        function checkVolunteerAvailability() {
+
+            const onlineVolunteers = parseInt(localStorage.getItem('onlineVolunteers') || '0');
+            
+
+            if (onlineVolunteers > 0) {
+
+                setTimeout(() => {
+                    if (!userData.connectedToVolunteer && !userData.volunteerAvailable) {
+                        console.log('Showing volunteer modal');
+                        userData.volunteerAvailable = true;
+                        
+
+                        const modal = document.getElementById('volunteerModal');
+                        if (modal) {
+                            modal.style.display = 'flex';
+                            console.log('Modal displayed');
+                            
+                           
+                            modal.addEventListener('click', (e) => {
+                               
+                                if (e.target === modal) {
+                                    e.stopPropagation();
+                                }
+                            });
+                        } else {
+                            console.error('Modal element not found');
+                        }
+                        
+                       
+                        addMessage("A volunteer is now available. You can choose to connect with them or continue chatting with the AI.", 'system');
+                    }
+                }, 1000); 
+            } else {
+
+                const noVolunteerMessage = document.createElement('div');
+                noVolunteerMessage.className = 'message system-message no-volunteer-message';
+                noVolunteerMessage.innerHTML = `
+                    <div class="message-content">
+                        <p>🔍 <strong>No volunteers available at the moment</strong></p>
+                        <p>You can continue chatting with our AI assistant while waiting.</p>
+                        <p>We'll notify you as soon as a volunteer becomes available.</p>
+                    </div>
+                `;
+                chatMessages.appendChild(noVolunteerMessage);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+
+                userData.messages.push({ 
+                    sender: 'system', 
+                    text: "No volunteers available at the moment. You can continue chatting with our AI assistant while waiting. We'll notify you as soon as a volunteer becomes available." 
+                });
+                
+
+                setInterval(() => {
+                    const updatedOnlineVolunteers = parseInt(localStorage.getItem('onlineVolunteers') || '0');
+                    if (updatedOnlineVolunteers > 0 && !userData.connectedToVolunteer && !userData.volunteerAvailable) {
+                        userData.volunteerAvailable = true;
+ 
+                        const modal = document.getElementById('volunteerModal');
+                        if (modal) {
+                            modal.style.display = 'flex';
+                            console.log('Modal displayed - volunteer became available');
+                            
+
+                            modal.addEventListener('click', (e) => {
+
+                                if (e.target === modal) {
+                                    e.stopPropagation();
+                                }
+                            });
+                        }
+                        
+                     
+                        addMessage("A volunteer is now available. You can choose to connect with them or continue chatting with the AI.", 'system');
+                    }
+                }, 5000); 
+            }
+        }
+        
+  
+        addUserToQueue();
+        checkVolunteerAvailability(); 
+
+        let connectionCheckCount = 0;
+        const connectionCheckInterval = setInterval(() => {
+            if (!userData.connectedToVolunteer) {
+                checkVolunteerConnection();
+                connectionCheckCount++;
+                
+
+                if (connectionCheckCount >= 12) { 
+                    clearInterval(connectionCheckInterval);
+                    setInterval(() => {
+                        if (!userData.connectedToVolunteer) {
+                            checkVolunteerConnection();
+                        }
+                    }, 5000);
+                }
+            } else {
+                clearInterval(connectionCheckInterval);
+            }
+        }, 5000);
+        
+       
+        setInterval(() => {
+            if (userData.connectedToVolunteer) {
+                checkForVolunteerMessages();
+            }
+        }, 3000);
+        
+     
+        setInterval(() => {
+            if (userData.inQueue) {
+                const queueData = localStorage.getItem('userQueue');
+                if (queueData) {
+                    const queue = JSON.parse(queueData);
+                    const userIndex = queue.findIndex(user => user.id === userId);
+                    
+                    if (userIndex !== -1) {
+                 
+                        userData.position = userIndex + 1;
+                        queuePosition.textContent = userData.position;
+                        
+          
+                        const estimatedWaitTime = Math.max(1, Math.floor(userData.position * 2.5));
+                        waitTime.textContent = `~${estimatedWaitTime} minutes`;
+                    } else {
+      
+                        userData.inQueue = false;
+                        document.querySelector('.queue-status').style.display = 'none';
+                    }
+                }
+            }
+        }, 10000);
+
+        acceptVolunteerBtn.addEventListener('click', () => {
+            console.log('Accept volunteer clicked');
+
+            volunteerModal.style.display = 'none';
+
+            userData.volunteerAccepted = true;
+            
+            // Connect to volunteer
+            const connectedUsers = JSON.parse(localStorage.getItem('connectedUsers') || '[]');
+            if (!connectedUsers.includes(userId)) {
+                connectedUsers.push(userId);
+                localStorage.setItem('connectedUsers', JSON.stringify(connectedUsers));
+            }
+            
+
+            userData.connectedToVolunteer = true;
+            userData.inQueue = false;
+            document.querySelector('.chat-header p').textContent = 'Connected to a volunteer';
+            document.querySelector('.queue-status').style.display = 'none';
+ 
+
+            addMessage("You are now connected to a volunteer. You can continue chatting.", 'system');
+            
+
+            updateRejoinButtonText();
+            
+
+            const queueData = localStorage.getItem('userQueue');
+            if (queueData) {
+                const queue = JSON.parse(queueData);
+                const updatedQueue = queue.filter(user => user.id !== userId);
+                localStorage.setItem('userQueue', JSON.stringify(updatedQueue));
+            }
+        });
+        
+ 
+        declineVolunteerBtn.addEventListener('click', () => {
+            console.log('Decline volunteer clicked');
+
+            volunteerModal.style.display = 'none';
+            
+
+            addMessage("You've chosen to continue chatting with the AI. A volunteer will be available again soon.", 'system');
+            
+
+            userData.volunteerAvailable = false;
+        });
+        
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = messageInput.value.trim();
+            if (message) {
+                addMessage(message, 'user');
+                messageInput.value = '';
+                
+
+                userData.messages.push({ sender: 'user', text: message });
+      
+                if (userData.connectedToVolunteer) {
+                    const userMessages = JSON.parse(localStorage.getItem('userMessages') || '[]');
+                    userMessages.push({
+                        userId: userId,
+                        message: message,
+                        sender: 'user',
+                        timestamp: new Date().toISOString()
+                    });
+                    localStorage.setItem('userMessages', JSON.stringify(userMessages));
+  
+                    const userSpecificMessages = JSON.parse(localStorage.getItem(`userMessages_${userId}`) || '[]');
+                    userSpecificMessages.push({
+                        message: message,
+                        sender: 'user',
+                        timestamp: new Date().toISOString()
+                    });
+                    localStorage.setItem(`userMessages_${userId}`, JSON.stringify(userSpecificMessages));
+                }
+                
+      
+                if (!userData.connectedToVolunteer) {
+
+                    const typingIndicator = document.createElement('div');
+                    typingIndicator.className = 'message ai-message typing';
+                    typingIndicator.innerHTML = '<div class="message-content"><p>...</p></div>';
+                    chatMessages.appendChild(typingIndicator);
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+  
+                    const aiResponse = await getAIResponse(message);
+
+                    typingIndicator.remove();
+
+                    addMessage(aiResponse, 'ai');
+                    userData.messages.push({ sender: 'ai', text: aiResponse });
+                }
+            }
+        });
+        
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            messageDiv.innerHTML = `
+                <div class="message-content">
+                    <p>${text}</p>
+                </div>
+            `;
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        const rejoinQueueButton = document.getElementById('rejoinQueueButton');
+
+        rejoinQueueButton.style.display = 'block';
+
+        function updateRejoinButtonText() {
+            if (userData.connectedToVolunteer) {
+                rejoinQueueButton.querySelector('button').textContent = 'Disconnect from Volunteer';
+            } else if (userData.inQueue) {
+                rejoinQueueButton.querySelector('button').textContent = 'Leave Queue';
+            } else {
+                rejoinQueueButton.querySelector('button').textContent = 'Join Queue';
+            }
+        }
+
+        updateRejoinButtonText();
+
+
+        rejoinQueueButton.addEventListener('click', () => {
+
+            if (userData.connectedToVolunteer) {
+
+                userData.connectedToVolunteer = false;
+                userData.volunteerAccepted = false;
+                
+
+                const connectedUsers = JSON.parse(localStorage.getItem('connectedUsers') || '[]');
+                const updatedConnectedUsers = connectedUsers.filter(id => id !== userId);
+                localStorage.setItem('connectedUsers', JSON.stringify(updatedConnectedUsers));
+                
+  
+                addMessage("You have disconnected from the volunteer.", 'system');
+                
+  
+                updateRejoinButtonText();
+            }
+
+            else if (userData.inQueue) {
+
+                const queueData = localStorage.getItem('userQueue');
+                if (queueData) {
+                    const queue = JSON.parse(queueData);
+                    const updatedQueue = queue.filter(user => user.id !== userId);
+                    localStorage.setItem('userQueue', JSON.stringify(updatedQueue));
+                }
+                
+                userData.inQueue = false;
+                
+
+                document.querySelector('.chat-header p').textContent = 'Chatting with AI';
+                document.querySelector('.queue-status').style.display = 'none';
+                
+
+                addMessage("You have left the queue. You can continue chatting with the AI.", 'system');
+                
+
+                updateRejoinButtonText();
+            }
+
+            else {
+
+                addUserToQueue();
+
+                document.querySelector('.chat-header p').textContent = 'You are in queue to talk with a volunteer';
+                document.querySelector('.queue-status').style.display = 'block';
+                
+
+                addMessage("You have joined the queue. A volunteer will be available soon.", 'system');
+                
+
+                updateRejoinButtonText();
+            }
+        });
+
+        document.getElementById('userDisplayName').textContent = localStorage.getItem('username') || 'User';
+  
+        document.getElementById('logoutButton').addEventListener('click', function() {
+            localStorage.removeItem('isAuthenticated');
+            window.location.href = 'login.html';
+        });
+        
+        document.getElementById('mobileLogoutButton').addEventListener('click', function() {
+            localStorage.removeItem('isAuthenticated');
+            window.location.href = 'login.html';
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const welcomeMessage = document.getElementById('welcomeMessage');
+            if (welcomeMessage) {
+                setTimeout(function() {
+                    welcomeMessage.classList.add('fade-out');
+                    setTimeout(function() {
+                        welcomeMessage.style.display = 'none';
+                    }, 500);
+                }, 10000); 
+            }
+        });
+    </script>
+</body>
+</html> 
